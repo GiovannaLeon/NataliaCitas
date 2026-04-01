@@ -1,0 +1,64 @@
+<main class="legal-page-shell">
+  <header class="legal-topbar">
+    <button type="button" class="menu-button" (click)="toggleMenu()" aria-label="Abrir menu legal">☰</button>
+
+    <a routerLink="/" class="legal-brand">Natalia</a>
+
+    <nav class="legal-top-actions" aria-label="Acciones legales">
+      <a routerLink="/login">Iniciar sesion</a>
+      <a routerLink="/registro" class="pill-link">Inscribete</a>
+    </nav>
+  </header>
+
+  <div class="legal-layout">
+    <aside class="legal-sidebar" [class.open]="menuOpen()">
+      <div class="sidebar-brand">Natalia</div>
+
+      <nav class="sidebar-nav" aria-label="Menu legal Natalia">
+        @for (item of menuItems; track item.path) {
+          <a routerLink="{{ item.path }}" routerLinkActive="active" (click)="closeMenu()">{{ item.label }}</a>
+        }
+      </nav>
+
+      <div class="sidebar-footer">
+        <a routerLink="/registro" class="sidebar-cta">Inscribete</a>
+        <a routerLink="/login" class="sidebar-login">Iniciar sesion</a>
+      </div>
+    </aside>
+
+    @if (menuOpen()) {
+      <button type="button" class="sidebar-backdrop" (click)="closeMenu()" aria-label="Cerrar menu"></button>
+    }
+
+    <section class="legal-content">
+      <p class="legal-eyebrow">{{ page().eyebrow }}</p>
+      <h1>{{ page().title }}</h1>
+      <p class="legal-updated">Ultima actualizacion: {{ page().updatedAt }}</p>
+
+      <div class="legal-highlight">
+        <span class="highlight-bar"></span>
+        <p>{{ page().intro }}</p>
+      </div>
+
+      @for (section of page().sections; track section.title) {
+        <section class="legal-section">
+          <h2>{{ section.title }}</h2>
+
+          @if (section.paragraphs?.length) {
+            @for (paragraph of section.paragraphs; track paragraph) {
+              <p>{{ paragraph }}</p>
+            }
+          }
+
+          @if (section.bullets?.length) {
+            <ul>
+              @for (bullet of section.bullets; track bullet) {
+                <li>{{ bullet }}</li>
+              }
+            </ul>
+          }
+        </section>
+      }
+    </section>
+  </div>
+</main>

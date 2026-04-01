@@ -1,0 +1,236 @@
+<main class="user-profile-page">
+  <header class="profile-topbar">
+    <a routerLink="/candidatos" class="back-link">← Volver</a>
+    <a routerLink="/" class="brand-link">Natalia</a>
+    <span class="status-pill">Editar perfil</span>
+  </header>
+
+  <section class="profile-shell">
+    <div class="profile-copy">
+      <p class="eyebrow">Tu perfil</p>
+      <h1>Editar mi perfil</h1>
+      <p class="description">
+        Aqui puedes editar los mismos datos estructurales que luego se muestran en perfiles completos dentro de la plataforma. Por ahora se guardan en este frontend para mantener coherencia visual.
+      </p>
+
+      <div class="info-card">
+        <h2>Que conviene completar</h2>
+        <ul>
+          <li>Ciudad, distrito y ocupacion para dar contexto real.</li>
+          <li>Una frase corta y una descripcion con tu estilo.</li>
+          <li>Intereses, plan ideal y limites para que el perfil se vea completo.</li>
+        </ul>
+      </div>
+
+      <article class="profile-preview-card">
+        <p class="eyebrow">Vista previa</p>
+        <div class="preview-hero">
+          <div class="preview-photo">
+            @if (profilePreview().photoPreviewUrl) {
+              <img [src]="profilePreview().photoPreviewUrl" [alt]="'Foto de ' + profilePreview().username" class="preview-photo-image" />
+            } @else {
+              <span class="preview-photo-initial">{{ profilePreview().username.charAt(0).toUpperCase() }}</span>
+            }
+
+            <span class="preview-photo-badge">{{ profilePreview().photoName }}</span>
+          </div>
+
+          <div class="preview-copy">
+            <h2>{{ profilePreview().username }}</h2>
+            <p class="preview-headline">{{ profilePreview().headline }}</p>
+            <p class="preview-meta">{{ profilePreview().city }} · {{ profilePreview().district }} · {{ profilePreview().occupation }}</p>
+          </div>
+        </div>
+
+        <div class="preview-grid">
+          <section>
+            <h3>Saludo</h3>
+            <p>{{ profilePreview().greeting }}</p>
+          </section>
+
+          <section>
+            <h3>Sobre ti</h3>
+            <p>{{ profilePreview().aboutMe }}</p>
+          </section>
+
+          <section>
+            <h3>Lo que buscas</h3>
+            <p>{{ profilePreview().relationshipGoal }}</p>
+          </section>
+
+          <section>
+            <h3>Discrecion</h3>
+            <p>{{ profilePreview().discreetStyle }}</p>
+          </section>
+        </div>
+
+        <div class="preview-list-grid">
+          <section>
+            <h3>Intereses</h3>
+            <ul>
+              @for (interest of profilePreview().interests; track interest) {
+                <li>{{ interest }}</li>
+              } @empty {
+                <li>Agrega intereses separados por comas.</li>
+              }
+            </ul>
+          </section>
+
+          <section>
+            <h3>Plan ideal</h3>
+            <ul>
+              @for (plan of profilePreview().idealPlan; track plan) {
+                <li>{{ plan }}</li>
+              } @empty {
+                <li>Agrega tu plan ideal separado por comas.</li>
+              }
+            </ul>
+          </section>
+
+          <section>
+            <h3>Limites</h3>
+            <ul>
+              @for (boundary of profilePreview().boundaries; track boundary) {
+                <li>{{ boundary }}</li>
+              } @empty {
+                <li>Agrega limites separados por comas.</li>
+              }
+            </ul>
+          </section>
+        </div>
+      </article>
+    </div>
+
+    <form class="profile-form" [formGroup]="profileForm" (ngSubmit)="saveProfile()" novalidate>
+      <input #photoInput type="file" accept="image/*" hidden (change)="onPhotoSelected($event)" />
+
+      <div class="grid two-columns">
+        <label class="field">
+          <span>Correo electronico</span>
+          <input type="email" formControlName="email" />
+        </label>
+
+        <label class="field">
+          <span>Nombre de usuario</span>
+          <input type="text" formControlName="username" />
+        </label>
+      </div>
+
+      <div class="grid two-columns">
+        <label class="field">
+          <span>Busco</span>
+          <select formControlName="lookingFor">
+            <option value="Hombre busca mujeres">Hombre busca mujeres</option>
+            <option value="Mujer busca hombres">Mujer busca hombres</option>
+            <option value="Hombre busca hombres">Hombre busca hombres</option>
+            <option value="Mujer busca mujeres">Mujer busca mujeres</option>
+          </select>
+        </label>
+
+        <label class="field">
+          <span>Estilo discreto</span>
+          <input type="text" formControlName="discreetStyle" placeholder="Curioso/a, Selectivo(a), Flexible..." />
+        </label>
+      </div>
+
+      <div class="grid three-columns">
+        <label class="field">
+          <span>Pais</span>
+          <input type="text" formControlName="country" />
+        </label>
+
+        <label class="field">
+          <span>Ciudad</span>
+          <input type="text" formControlName="city" />
+        </label>
+
+        <label class="field">
+          <span>Distrito</span>
+          <input type="text" formControlName="district" />
+        </label>
+      </div>
+
+      <div class="grid three-columns">
+        <label class="field">
+          <span>Codigo postal</span>
+          <input type="text" formControlName="postalCode" />
+        </label>
+
+        <label class="field">
+          <span>Altura</span>
+          <input type="text" formControlName="height" />
+        </label>
+
+        <label class="field">
+          <span>Peso</span>
+          <input type="text" formControlName="weight" />
+        </label>
+      </div>
+
+      <div class="grid two-columns">
+        <label class="field">
+          <span>Ocupacion</span>
+          <input type="text" formControlName="occupation" />
+        </label>
+
+        <label class="field">
+          <span>Que buscas</span>
+          <select formControlName="relationshipGoal">
+            <option value="Algo a corto plazo">Algo a corto plazo</option>
+            <option value="Algo serio">Algo serio</option>
+            <option value="Explorar sin etiquetas">Explorar sin etiquetas</option>
+          </select>
+        </label>
+      </div>
+
+      <label class="field">
+        <span>Frase principal del perfil</span>
+        <input type="text" formControlName="headline" maxlength="110" placeholder="Ejemplo: Elegante, discreta y directa cuando hay quimica." />
+      </label>
+
+      <label class="field">
+        <span>Saludo</span>
+        <input type="text" formControlName="greeting" maxlength="64" placeholder="Un saludo corto que te represente" />
+      </label>
+
+      <label class="field">
+        <span>Sobre ti</span>
+        <textarea formControlName="aboutMe" rows="5" placeholder="Describe tu energia, lo que te atrae y el tipo de conexion que te interesa."></textarea>
+      </label>
+
+      <div class="grid two-columns">
+        <label class="field">
+          <span>Intereses</span>
+          <textarea formControlName="interestsText" rows="4" placeholder="Separalos con comas"></textarea>
+        </label>
+
+        <label class="field">
+          <span>Plan ideal</span>
+          <textarea formControlName="idealPlanText" rows="4" placeholder="Separalo con comas"></textarea>
+        </label>
+      </div>
+
+      <label class="field">
+        <span>Limites</span>
+        <textarea formControlName="boundariesText" rows="4" placeholder="Separalos con comas"></textarea>
+      </label>
+
+      <label class="field">
+        <span>Foto principal</span>
+        <div class="photo-field-row">
+          <input type="text" formControlName="photoName" placeholder="Ninguna foto seleccionada" readonly />
+          <button type="button" class="photo-picker-button" (click)="openPhotoPicker(photoInput)">Elegir foto</button>
+        </div>
+      </label>
+
+      @if (profileForm.controls.aboutMe.invalid && profileForm.controls.aboutMe.touched) {
+        <p class="error-text">Tu descripcion debe tener al menos 20 caracteres.</p>
+      }
+
+      <div class="form-actions">
+        <a routerLink="/candidatos" class="secondary-link">Lo hago luego</a>
+        <button type="submit" class="save-button">Guardar perfil</button>
+      </div>
+    </form>
+  </section>
+</main>

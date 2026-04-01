@@ -1,0 +1,21 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap');
+
+html {
+	scroll-behavior: smooth;
+}
+
+body {
+	margin: 0;
+	font-family: 'Manrope', sans-serif;
+	background: #050505;
+}
+
+* {
+	box-sizing: border-box;
+}
+
+button,
+input,
+a {
+	-webkit-tap-highlight-color: transparent;
+}

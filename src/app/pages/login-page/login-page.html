@@ -1,0 +1,40 @@
+<main class="login-screen">
+  <header class="brand-header centered">
+    <a routerLink="/" class="brand-link" aria-label="Natalia">
+      <span class="brand-wordmark">Natalia</span>
+    </a>
+  </header>
+
+  <section class="login-card" aria-labelledby="login-title">
+    <div class="login-card-header">
+      <a routerLink="/" class="icon-button" aria-label="Volver al inicio">←</a>
+      <h1 id="login-title">Iniciar sesion</h1>
+      <span class="login-card-spacer" aria-hidden="true"></span>
+    </div>
+
+    <form class="form-grid compact-form" (submit)="signIn(usernameInput.value, passwordInput.value); $event.preventDefault()">
+      <label class="field">
+        <span>Nombre de usuario</span>
+        <input #usernameInput type="text" placeholder="Tu usuario" autocomplete="username" />
+      </label>
+
+      <label class="field">
+        <span>Contrasena</span>
+        <input #passwordInput type="password" placeholder="Ingresa tu clave" autocomplete="current-password" />
+      </label>
+
+      @if (loginError()) {
+        <p class="support-link error-copy">{{ loginError() }}</p>
+      }
+
+      <button type="submit" class="primary-button full-width">Iniciar sesion</button>
+
+      <a class="support-link centered-link" href="#">Has olvidado tu nombre de usuario o contrasena?</a>
+    </form>
+
+    <p class="switch-copy">
+      Nuevo en Natalia?
+      <a routerLink="/registro" class="text-link">Crear perfil</a>
+    </p>
+  </section>
+</main>

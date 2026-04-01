@@ -1,0 +1,54 @@
+:host {
+  display: block;
+}
+
+@media (max-width: 1100px) {
+  .register-screen {
+    grid-template-columns: 1fr;
+    background: #1a1d22;
+  }
+
+  .visual-panel {
+    min-height: 42rem;
+  }
+}
+
+@media (max-width: 720px) {
+  .brand-header,
+  .brand-header.between {
+    padding-inline: 1rem;
+  }
+
+  .login-card {
+    width: min(94vw, 525px);
+  }
+
+  .compact-form,
+  .switch-copy {
+    padding-inline: 1.25rem;
+  }
+
+  .register-content {
+    padding-inline: 1rem;
+  }
+
+  .register-form-shell {
+    width: 100%;
+  }
+
+  .register-heading-row {
+    grid-template-columns: auto 1fr;
+    align-items: start;
+  }
+
+  .visual-panel {
+    min-height: 30rem;
+  }
+
+  .visual-highlight {
+    width: 12rem;
+    height: 12rem;
+    left: 4%;
+    bottom: 6%;
+  }
+}

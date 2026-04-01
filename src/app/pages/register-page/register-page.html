@@ -1,0 +1,457 @@
+<main class="register-screen" [class.photo-step]="isFourthStep() || isFifthStep() || isSixthStep() || isSeventhStep()">
+  @if (!isFourthStep() && !isFifthStep() && !isSixthStep() && !isSeventhStep()) {
+    <section class="register-panel">
+      <header class="register-topbar">
+        <a routerLink="/" class="brand-link" aria-label="Natalia">
+          <span class="brand-stack">Natalia</span>
+        </a>
+      </header>
+
+      <div class="register-content">
+        @if (isFirstStep()) {
+          <form class="register-form" [formGroup]="stepOneForm" novalidate>
+            <h1>Crear tu cuenta</h1>
+
+            <div class="field-row with-help">
+              <label class="field select-field">
+                <span>Soy:</span>
+                <select formControlName="lookingFor">
+                  <option value="">Selecciona una opcion</option>
+                  <option value="Hombre busca mujeres">Hombre busca mujeres</option>
+                  <option value="Mujer busca hombres">Mujer busca hombres</option>
+                  <option value="Hombre busca hombres">Hombre busca hombres</option>
+                  <option value="Mujer busca mujeres">Mujer busca mujeres</option>
+                </select>
+              </label>
+              <span class="help-badge">?</span>
+            </div>
+            @if (stepOneForm.controls.lookingFor.invalid && stepOneForm.controls.lookingFor.touched) {
+              <p class="error-text">Selecciona una opcion para continuar.</p>
+            }
+
+            <label class="field">
+              <span>Fecha de nacimiento</span>
+              <input type="date" formControlName="birthDate" />
+            </label>
+            @if (stepOneForm.controls.birthDate.invalid && stepOneForm.controls.birthDate.touched) {
+              <p class="error-text">Ingresa tu fecha de nacimiento.</p>
+            }
+
+            <label class="field">
+              <span>Pais o ciudad</span>
+              <input type="text" placeholder="Peru" formControlName="country" />
+            </label>
+            @if (stepOneForm.controls.country.invalid && stepOneForm.controls.country.touched) {
+              <p class="error-text">Este campo es obligatorio.</p>
+            }
+
+            <label class="field">
+              <span>Codigo Postal</span>
+              <input type="text" placeholder="15001" formControlName="postalCode" />
+            </label>
+            @if (stepOneForm.controls.postalCode.invalid && stepOneForm.controls.postalCode.touched) {
+              <p class="error-text">Ingresa un codigo postal valido.</p>
+            }
+
+            <button type="button" class="continue-button" (click)="continueToStepTwo()">Continuar</button>
+
+            <p class="legal-copy">© 2026 Natalia. Las modelos se muestran con fines ilustrativos.</p>
+          </form>
+        } @else if (isSecondStep()) {
+          <form class="register-form second-step" [formGroup]="stepTwoForm" (ngSubmit)="continueToStepThree()" novalidate>
+            <div class="step-header">
+              <button type="button" class="back-button" (click)="backToStepOne()" aria-label="Volver">
+                ←
+              </button>
+              <h1>Ya casi has terminado</h1>
+            </div>
+
+            <label class="field with-icon">
+              <span>Correo electronico</span>
+              <input type="email" placeholder="correo@privado.com" formControlName="email" />
+              <span class="field-icon">?</span>
+            </label>
+            @if (stepTwoForm.controls.email.invalid && stepTwoForm.controls.email.touched) {
+              <p class="error-text">Ingresa un correo valido.</p>
+            }
+
+            <label class="field with-icon">
+              <span>Nombre de usuario</span>
+              <input type="text" placeholder="Tu alias" formControlName="username" />
+              <span class="field-icon">?</span>
+            </label>
+            @if (usernameTaken()) {
+              <p class="error-text">{{ stepTwoForm.controls.username.value }} no esta disponible.</p>
+            }
+            @if (stepTwoForm.controls.username.invalid && stepTwoForm.controls.username.touched) {
+              <p class="error-text">El usuario debe tener al menos 4 caracteres.</p>
+            }
+
+            <label class="field with-icon">
+              <span>Contrasena</span>
+              <input type="password" placeholder="Crea una clave segura" formControlName="password" />
+              <span class="field-icon">◌</span>
+            </label>
+            @if (stepTwoForm.controls.password.touched && passwordScore() < 5) {
+              <p class="error-text">La contrasena debe incluir 12 caracteres, mayuscula, minuscula, numero y simbolo.</p>
+            }
+
+            <label class="checkbox-row consent-row">
+              <input type="checkbox" formControlName="acceptedTerms" />
+              <span>
+                Certifico que tengo mas de 18 anos y acepto la
+                <a routerLink="/legal/privacidad">politica de privacidad</a>
+                y los
+                <a routerLink="/legal/terminos">terminos de Natalia</a>.
+              </span>
+            </label>
+            @if (stepTwoForm.controls.acceptedTerms.invalid && stepTwoForm.controls.acceptedTerms.touched) {
+              <p class="error-text">Debes aceptar los terminos para continuar.</p>
+            }
+
+            <label class="checkbox-row consent-row optional-row">
+              <input type="checkbox" formControlName="acceptedMarketing" />
+              <span>Quiero recibir ofertas, promociones y novedades privadas.</span>
+            </label>
+
+            <button type="submit" class="continue-button">Continuar</button>
+
+            <p class="legal-copy">Natalia te notificara perfiles afines y coincidencias en un entorno moderado y discreto.</p>
+          </form>
+        } @else {
+          <form class="register-form third-step" [formGroup]="stepThreeForm" novalidate>
+            <div class="step-header">
+              <button type="button" class="back-button" (click)="backToStepTwo()" aria-label="Volver">
+                ←
+              </button>
+              <h1>Discreet Match</h1>
+            </div>
+
+            <p class="match-copy">Elige lo que mas te guste. Encuentra a personas que valoran la discrecion como tu.</p>
+
+            <label class="match-option">
+              <input
+                type="radio"
+                formControlName="discreetStyle"
+                value="Curioso/a"
+                [checked]="selectedDiscreetStyle() === 'Curioso/a'"
+                (change)="selectDiscreetStyle('Curioso/a')"
+              />
+              <span>
+                <strong>Curioso/a</strong>
+                <small>Te gusta mostrar cautela y tantear las cosas. Prefieres ir poco a poco en la conexion.</small>
+              </span>
+            </label>
+
+            <label class="match-option">
+              <input
+                type="radio"
+                formControlName="discreetStyle"
+                value="Selectivo(a)"
+                [checked]="selectedDiscreetStyle() === 'Selectivo(a)'"
+                (change)="selectDiscreetStyle('Selectivo(a)')"
+              />
+              <span>
+                <strong>Selectivo(a)</strong>
+                <small>Te gusta la privacidad, pero no ocultar nada. Eres transparente con las personas que importan.</small>
+              </span>
+            </label>
+
+            <label class="match-option">
+              <input
+                type="radio"
+                formControlName="discreetStyle"
+                value="Flexible"
+                [checked]="selectedDiscreetStyle() === 'Flexible'"
+                (change)="selectDiscreetStyle('Flexible')"
+              />
+              <span>
+                <strong>Flexible</strong>
+                <small>Te adaptas segun la persona y la conexion. Mantienes la discrecion cuando es necesario.</small>
+              </span>
+            </label>
+
+            <label class="match-option">
+              <input
+                type="radio"
+                formControlName="discreetStyle"
+                value="Aventurero(a)"
+                [checked]="selectedDiscreetStyle() === 'Aventurero(a)'"
+                (change)="selectDiscreetStyle('Aventurero(a)')"
+              />
+              <span>
+                <strong>Aventurero(a)</strong>
+                <small>No te importa que te vean y te gusta expresar tu identidad libremente.</small>
+              </span>
+            </label>
+
+            <button
+              type="button"
+              class="continue-button"
+              [class.disabled]="!canContinueThirdStep()"
+              [disabled]="!canContinueThirdStep()"
+              (click)="continueToStepFour()"
+            >
+              Continuar
+            </button>
+          </form>
+        }
+      </div>
+    </section>
+
+    <aside class="visual-panel" aria-hidden="true">
+      <div class="visual-photo"></div>
+      <div class="visual-overlay"></div>
+    </aside>
+  } @else if (isFourthStep()) {
+    <section class="photo-step-layout">
+      <div class="photo-copy-panel">
+        <p class="photo-brand">Natalia</p>
+
+        <div class="photo-copy-inner">
+          <h1 class="photo-title">Agrega tu foto</h1>
+          <p class="photo-description">Selecciona una foto de perfil para completar tu cuenta y empezar a conectar con una presencia mas autentica.</p>
+
+          <input #photoInput type="file" accept="image/*" hidden (change)="onPhotoSelected($event)" />
+
+          <button type="button" class="continue-button upload-button" (click)="openPhotoPicker(photoInput)">
+            Seleccionar foto
+          </button>
+
+          @if (selectedPhotoName()) {
+            <p class="success-text photo-status">Foto seleccionada: {{ selectedPhotoName() }}</p>
+          } @else {
+            <p class="photo-helper">Podras cambiarla mas tarde desde tu perfil.</p>
+          }
+
+          <div class="photo-dots" aria-hidden="true">
+            <span class="dot active"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+          </div>
+
+          <button
+            type="button"
+            class="continue-button upload-button next-button"
+            [class.disabled]="!canContinuePhotoStep()"
+            [disabled]="!canContinuePhotoStep()"
+            (click)="continueFromPhotoStep()"
+          >
+            Siguiente
+          </button>
+        </div>
+      </div>
+
+      <div class="photo-visual-panel" aria-hidden="true">
+        <button type="button" class="skip-button" (click)="skipPhotoStep()">Luego</button>
+
+        <div class="phone-illustration">
+          <div class="phone-shell">
+            <div class="phone-notch"></div>
+            <div class="phone-screen">
+              <div class="avatar-head"></div>
+              <div class="avatar-body"></div>
+              <div class="avatar-mask"></div>
+            </div>
+          </div>
+          <div class="floor-glow"></div>
+        </div>
+      </div>
+    </section>
+  } @else if (isFifthStep()) {
+    <section class="photo-step-layout onboarding-layout">
+      <div class="photo-copy-panel onboarding-copy-panel">
+        <p class="photo-brand">Natalia</p>
+
+        <div class="photo-copy-inner onboarding-copy-inner">
+          <h1 class="photo-title small-onboarding-title">Respuesta rapida</h1>
+          <p class="photo-description">Configura una respuesta para los primeros mensajes que recibas.</p>
+
+          <form class="onboarding-form" [formGroup]="stepFiveForm" novalidate>
+            <label class="reply-option">
+              <input type="radio" formControlName="replyMode" value="preset" />
+              <span>Gracias por escribirme, prefiero responder a mensajes mas personalizados.</span>
+            </label>
+
+            <label class="reply-option">
+              <input type="radio" formControlName="replyMode" value="custom" />
+              <span>Crear mi propia respuesta</span>
+            </label>
+
+            @if (customReplySelected()) {
+              <label class="message-box">
+                <span>Escribe tu mensaje</span>
+                <textarea formControlName="customReply" rows="4" placeholder="Escribe una respuesta corta"></textarea>
+              </label>
+              @if (stepFiveForm.controls.customReply.touched && !stepFiveForm.controls.customReply.value.trim()) {
+                <p class="error-text">Escribe una respuesta para continuar.</p>
+              }
+            }
+
+            <div class="onboarding-actions">
+              <button type="button" class="secondary-pill" (click)="currentStep.set(4)">Back</button>
+              <button type="button" class="continue-button onboarding-next" (click)="continueToStepSix()">Next</button>
+            </div>
+          </form>
+
+          <div class="photo-dots" aria-hidden="true">
+            <span class="dot passed"></span>
+            <span class="dot active"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="photo-visual-panel simple-illustration" aria-hidden="true">
+        <button type="button" class="skip-button" (click)="skipToStepSix()">Later</button>
+        <div class="walk-illustration">
+          <div class="cloud cloud-one"></div>
+          <div class="cloud cloud-two"></div>
+          <div class="person-figure"></div>
+          <div class="tree-shape"></div>
+        </div>
+      </div>
+    </section>
+  } @else if (isSixthStep()) {
+    <section class="photo-step-layout onboarding-layout">
+      <div class="photo-copy-panel onboarding-copy-panel">
+        <p class="photo-brand">Natalia</p>
+
+        <div class="photo-copy-inner onboarding-copy-inner">
+          <h1 class="photo-title small-onboarding-title">Opciones extra</h1>
+          <p class="photo-description">Activa las opciones que quieras usar desde el inicio.</p>
+
+          <form class="onboarding-form check-form" [formGroup]="stepSixForm" novalidate>
+            <label class="check-option">
+              <input type="checkbox" formControlName="autoKeyExchange" />
+              <span>
+                <strong>Intercambio automatico de claves</strong>
+                <small>Comparte una frase de presentacion al hacer match.</small>
+              </span>
+            </label>
+
+            <label class="check-option">
+              <input type="checkbox" formControlName="notifyOffers" />
+              <span>
+                <strong>Notificaciones privadas</strong>
+                <small>Recibe novedades y sugerencias destacadas.</small>
+              </span>
+            </label>
+
+            <label class="check-option">
+              <input type="checkbox" formControlName="contactMatches" />
+              <span>
+                <strong>Permitir contacto de coincidencias</strong>
+                <small>Deja abierta la puerta a nuevas conversaciones.</small>
+              </span>
+            </label>
+
+            <div class="onboarding-actions">
+              <button type="button" class="secondary-pill" (click)="backToStepFive()">Back</button>
+              <button type="button" class="continue-button onboarding-next" (click)="continueToStepSeven()">Continuar</button>
+            </div>
+          </form>
+
+          <div class="photo-dots" aria-hidden="true">
+            <span class="dot passed"></span>
+            <span class="dot passed"></span>
+            <span class="dot active"></span>
+            <span class="dot"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="photo-visual-panel simple-illustration" aria-hidden="true">
+        <button type="button" class="skip-button" (click)="skipToStepSeven()">Later</button>
+        <div class="walk-illustration alt-scene">
+          <div class="cloud cloud-one"></div>
+          <div class="cloud cloud-two"></div>
+          <div class="person-figure"></div>
+          <div class="leaf-shape"></div>
+        </div>
+      </div>
+    </section>
+  } @else {
+    <section class="photo-step-layout onboarding-layout final-onboarding">
+      <div class="photo-copy-panel onboarding-copy-panel">
+        <p class="photo-brand">Natalia</p>
+
+        <div class="photo-copy-inner onboarding-copy-inner more-about-inner">
+          <h1 class="photo-title small-onboarding-title">Cuentanos mas sobre ti</h1>
+          <p class="photo-description">Completa estos detalles para personalizar mejor tu experiencia.</p>
+
+          <form class="onboarding-form" [formGroup]="stepSevenForm" (ngSubmit)="submitOnboarding()" novalidate>
+            <label class="message-box compact-box">
+              <span>Que buscas</span>
+              <select formControlName="relationshipGoal">
+                <option value="Algo a corto plazo">Algo a corto plazo</option>
+                <option value="Algo serio">Algo serio</option>
+                <option value="Explorar sin etiquetas">Explorar sin etiquetas</option>
+              </select>
+            </label>
+
+            <label class="message-box compact-box">
+              <span>Saludo</span>
+              <input type="text" formControlName="greeting" maxlength="64" placeholder="Escribe un saludo breve" />
+            </label>
+
+            <label class="message-box large-box">
+              <span>Que te hace valiosa para conectar contigo</span>
+              <textarea formControlName="aboutMe" rows="5" maxlength="2000" placeholder="Describe lo que buscas y como te gusta conectar"></textarea>
+            </label>
+            @if (stepSevenForm.controls.aboutMe.invalid && stepSevenForm.controls.aboutMe.touched) {
+              <p class="error-text">Escribe al menos 20 caracteres para continuar.</p>
+            }
+
+            <div class="double-field-row">
+              <label class="message-box compact-box">
+                <span>Altura</span>
+                <select formControlName="height">
+                  <option value="1,55m">1,55m</option>
+                  <option value="1,60m">1,60m</option>
+                  <option value="1,65m">1,65m</option>
+                  <option value="1,70m">1,70m</option>
+                </select>
+              </label>
+
+              <label class="message-box compact-box">
+                <span>Peso</span>
+                <select formControlName="weight">
+                  <option value="48kg">48kg</option>
+                  <option value="52kg">52kg</option>
+                  <option value="55kg">55kg</option>
+                  <option value="60kg">60kg</option>
+                </select>
+              </label>
+            </div>
+
+            <div class="onboarding-actions">
+              <button type="button" class="secondary-pill" (click)="backToStepSix()">Back</button>
+              <button type="submit" class="continue-button onboarding-next">Continuar</button>
+            </div>
+          </form>
+
+          <div class="photo-dots" aria-hidden="true">
+            <span class="dot passed"></span>
+            <span class="dot passed"></span>
+            <span class="dot passed"></span>
+            <span class="dot active"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="photo-visual-panel simple-illustration" aria-hidden="true">
+        <button type="button" class="skip-button" (click)="skipFinalDetails()">Later</button>
+        <div class="walk-illustration final-scene">
+          <div class="cloud cloud-one"></div>
+          <div class="cloud cloud-two"></div>
+          <div class="person-figure"></div>
+          <div class="leaf-shape"></div>
+          <div class="branch-shape"></div>
+        </div>
+      </div>
+    </section>
+  }
+</main>

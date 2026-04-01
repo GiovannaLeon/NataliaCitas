@@ -1,0 +1,186 @@
+:host {
+  display: block;
+  min-height: 100vh;
+}
+
+.landing-page {
+  min-height: 100vh;
+  background: #0a0a0a;
+  color: #fff7fb;
+  position: relative;
+}
+
+.topbar {
+  position: absolute;
+  inset: 0 0 auto 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 1rem;
+  padding: 2rem clamp(1.5rem, 3.6vw, 3rem);
+}
+
+.login-link,
+.cta-button {
+  text-decoration: none;
+}
+
+.login-link {
+  border: 1px solid rgba(255, 255, 255, 0.82);
+  border-radius: 999px;
+  padding: 0.9rem 1.5rem;
+  color: #ffffff;
+  font-weight: 700;
+  transition: background-color 160ms ease, transform 160ms ease;
+}
+
+.login-link:hover,
+.login-link:focus-visible,
+.cta-button:hover,
+.cta-button:focus-visible {
+  transform: translateY(-1px);
+}
+
+.hero-section {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+.hero-backdrop,
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+}
+
+.hero-backdrop {
+  background-image:
+    linear-gradient(180deg, rgba(10, 10, 10, 0.34), rgba(10, 10, 10, 0.46)),
+    url('/images/natalia.png');
+  background-position: 62% center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.hero-overlay {
+  background:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.34) 30%, rgba(0, 0, 0, 0.14) 58%, rgba(0, 0, 0, 0.34) 100%),
+    radial-gradient(circle at 16% 60%, rgba(255, 255, 255, 0.08), transparent 18%);
+}
+
+.hero-copy {
+  position: relative;
+  z-index: 1;
+  width: min(92vw, 820px);
+  text-align: left;
+  padding: clamp(7rem, 16vh, 9.5rem) 2rem 6rem clamp(4.5rem, 9vw, 11rem);
+}
+
+.hero-wordmark {
+  color: #fffaf8;
+  text-transform: uppercase;
+  letter-spacing: 0.18rem;
+  font-size: clamp(2.6rem, 5vw, 4.8rem);
+  font-weight: 300;
+}
+
+h1 {
+  margin: 1rem 0 0;
+  max-width: none;
+  width: fit-content;
+  font-family: 'Manrope', sans-serif;
+  font-size: clamp(2.7rem, 5vw, 4.9rem);
+  line-height: 0.98;
+  font-weight: 600;
+  text-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+}
+
+.hero-line {
+  display: block;
+  white-space: nowrap;
+}
+
+.hero-actions {
+  margin-top: 2.35rem;
+}
+
+.cta-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 188px;
+  border-radius: 999px;
+  padding: 1rem 1.75rem;
+  background: linear-gradient(135deg, #ff1670, #e0005b);
+  box-shadow: 0 18px 42px rgba(224, 0, 91, 0.34);
+  color: #ffffff;
+  font-weight: 800;
+}
+
+.hero-bottom {
+  position: absolute;
+  bottom: 1.75rem;
+  z-index: 1;
+  display: flex;
+  gap: 0.85rem;
+}
+
+.hero-bottom-right {
+  right: 2.25rem;
+}
+
+.locale-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 112px;
+  min-height: 42px;
+  padding: 0.65rem 1rem;
+  border-radius: 0.8rem;
+  background: rgba(255, 255, 255, 0.95);
+  color: #111111;
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+
+@media (max-width: 720px) {
+  .topbar {
+    padding: 1rem;
+  }
+
+  h1 {
+    width: 100%;
+    font-size: clamp(1.45rem, 5.8vw, 2.35rem);
+  }
+
+  .cta-button {
+    min-width: 100%;
+  }
+
+  .hero-copy {
+    width: min(92vw, 540px);
+    padding: 7rem 1rem 2rem;
+  }
+
+  .hero-bottom {
+    position: static;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+  }
+
+  .hero-section {
+    padding-bottom: 2rem;
+  }
+}
+
+@media (max-width: 980px) {
+  .hero-copy {
+    width: min(92vw, 680px);
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}

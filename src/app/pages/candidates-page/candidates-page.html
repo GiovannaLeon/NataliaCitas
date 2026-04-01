@@ -1,0 +1,242 @@
+<main class="candidates-page">
+  <header class="candidates-topbar">
+    <a routerLink="/" class="brand-link" aria-label="Natalia">
+      <span class="brand-stack">Natalia</span>
+    </a>
+
+    <nav class="topbar-nav" aria-label="Principal">
+      <button type="button" class="topbar-link" [class.active]="activeSection() === 'candidatos'" (click)="openSection('candidatos')">
+        {{ matchListLabel() }}
+      </button>
+      <button type="button" class="topbar-link" [class.active]="activeSection() === 'chat'" (click)="openSection('chat')">Chat</button>
+      <button type="button" class="topbar-link" [class.active]="activeSection() === 'favoritos'" (click)="openSection('favoritos')">Favoritos</button>
+    </nav>
+
+    <div class="topbar-right">
+      <div class="user-summary-card">
+        <div class="user-avatar">
+          @if (currentUserPhotoUrl()) {
+            <img [src]="currentUserPhotoUrl()" [alt]="'Foto de ' + currentUsername()" class="user-avatar-image" />
+          } @else {
+            <span class="user-avatar-initial">{{ currentUserInitial() }}</span>
+          }
+        </div>
+
+        <div class="user-summary">
+          <span class="user-summary-label">Tu perfil</span>
+          <strong>{{ currentUsername() }}</strong>
+          <small>{{ profileCompleted() ? 'Perfil completo' : 'Falta completar tu perfil' }}</small>
+        </div>
+      </div>
+
+      <a routerLink="/mi-perfil" class="edit-profile-button">Editar perfil</a>
+
+      <button type="button" class="topbar-action" [class.active]="activeSection() === 'explorar'" (click)="openSection('explorar')">Explorar</button>
+    </div>
+  </header>
+
+  <section class="candidates-hero">
+    <div>
+      <p class="eyebrow">Coincidencias privadas</p>
+      <h1>{{ matchesHeading() }}</h1>
+      <p class="hero-copy">Todavia no hay backend, asi que esta vista es de demostracion, pero ya funciona como pagina separada con mensajes y chat visible.</p>
+    </div>
+
+    <div class="hero-pill">{{ candidates().length }} perfiles conectados</div>
+  </section>
+
+  @if (activeSection() === 'explorar') {
+    <section class="explore-strip">
+      <div>
+        <p class="strip-kicker">Explorar</p>
+        <h2>Filtra sin backend</h2>
+      </div>
+
+      <div class="filter-chips" role="tablist" aria-label="Filtros de candidatos">
+        @for (filter of exploreFilters; track filter.value) {
+          <button
+            type="button"
+            class="filter-chip"
+            [class.active]="activeFilter() === filter.value"
+            (click)="setFilter(filter.value)"
+          >
+            {{ filter.label }}
+          </button>
+        }
+      </div>
+    </section>
+  }
+
+  @if (activeSection() === 'candidatos' || activeSection() === 'explorar') {
+    <section class="candidates-layout" [class.blurred-underlay]="showWelcomeModal()">
+      <div class="cards-column">
+        @for (candidate of visibleCandidates(); track candidate.slug) {
+          <article
+            class="candidate-card"
+            [class]="'candidate-card accent-' + candidate.accent"
+            [class.active]="selectedCandidate().slug === candidate.slug"
+          >
+            <div class="candidate-photo">
+              <span class="candidate-badge">{{ candidate.status }}</span>
+            </div>
+
+            <div class="candidate-meta">
+              <div>
+                <h2>{{ candidate.name }}, {{ candidate.age }}</h2>
+                <p>{{ candidate.city }} · {{ candidate.district }}</p>
+              </div>
+              <button
+                type="button"
+                class="ghost-heart"
+                [class.active]="isFavorite(candidate.slug)"
+                [attr.aria-label]="(isFavorite(candidate.slug) ? 'Quitar de favoritos a ' : 'Guardar ') + candidate.name"
+                (click)="toggleFavorite(candidate.slug)"
+              >
+                ♡
+              </button>
+            </div>
+
+            <p class="candidate-intro">{{ candidate.intro }}</p>
+
+            <div class="candidate-actions">
+              <a
+                class="card-action secondary"
+                [routerLink]="['/perfil', candidate.slug]"
+                [state]="{ lookingFor: lookingFor(), selectedCandidateSlug: candidate.slug }"
+              >
+                Ver perfil
+              </a>
+              <button type="button" class="card-action primary" (click)="selectCandidate(candidate.slug)">Chatear</button>
+            </div>
+          </article>
+        }
+      </div>
+
+      <aside class="chat-panel" id="chat-panel">
+        <div class="chat-header">
+          <div>
+            <p class="chat-kicker">Chat activo</p>
+            <h2>{{ selectedCandidate().name }}</h2>
+          </div>
+          <span class="chat-status">En linea</span>
+        </div>
+
+        <div class="chat-thread">
+          @for (message of chatMessages(); track message.time + message.text) {
+            <article class="chat-bubble" [class.mine]="message.from === 'me'">
+              <p>{{ message.text }}</p>
+              <span>{{ message.time }}</span>
+            </article>
+          }
+        </div>
+
+        <form class="chat-compose" novalidate (submit)="sendMessage(chatInput); $event.preventDefault()">
+          <input #chatInput type="text" placeholder="Escribe un mensaje privado..." />
+          <button type="submit">Enviar</button>
+        </form>
+      </aside>
+    </section>
+  }
+
+  @if (activeSection() === 'chat') {
+    <section class="chat-focus-layout" [class.blurred-underlay]="showWelcomeModal()">
+      <article class="candidate-card chat-focus-card" [class]="'candidate-card accent-' + selectedCandidate().accent">
+        <div class="candidate-photo">
+          <span class="candidate-badge">{{ selectedCandidate().status }}</span>
+        </div>
+
+        <div class="candidate-meta">
+          <div>
+            <h2>{{ selectedCandidate().name }}, {{ selectedCandidate().age }}</h2>
+            <p>{{ selectedCandidate().city }} · {{ selectedCandidate().district }}</p>
+          </div>
+        </div>
+
+        <p class="candidate-intro">{{ selectedCandidate().intro }}</p>
+
+        <div class="candidate-actions">
+          <a
+            class="card-action secondary"
+            [routerLink]="['/perfil', selectedCandidate().slug]"
+            [state]="{ lookingFor: lookingFor(), selectedCandidateSlug: selectedCandidate().slug }"
+          >
+            Ver perfil
+          </a>
+          <button type="button" class="card-action primary" (click)="openSection('candidatos')">Volver a la lista</button>
+        </div>
+      </article>
+
+      <aside class="chat-panel chat-panel-expanded" id="chat-panel">
+        <div class="chat-header">
+          <div>
+            <p class="chat-kicker">Chat activo</p>
+            <h2>{{ selectedCandidate().name }}</h2>
+          </div>
+          <span class="chat-status">En linea</span>
+        </div>
+
+        <div class="chat-thread chat-thread-expanded">
+          @for (message of chatMessages(); track message.time + message.text) {
+            <article class="chat-bubble" [class.mine]="message.from === 'me'">
+              <p>{{ message.text }}</p>
+              <span>{{ message.time }}</span>
+            </article>
+          }
+        </div>
+
+        <form class="chat-compose" novalidate (submit)="sendMessage(chatInputFocus); $event.preventDefault()">
+          <input #chatInputFocus type="text" placeholder="Escribe un mensaje privado..." />
+          <button type="submit">Enviar</button>
+        </form>
+      </aside>
+    </section>
+  }
+
+  @if (activeSection() === 'favoritos') {
+    <section class="favorites-section">
+      <div class="section-heading">
+        <p class="strip-kicker">Favoritos</p>
+        <h2>Perfiles guardados</h2>
+      </div>
+
+      @if (favoriteCandidates().length) {
+        <div class="favorites-grid">
+          @for (candidate of favoriteCandidates(); track candidate.slug) {
+            <article class="favorite-card" [class]="'favorite-card accent-' + candidate.accent">
+              <div class="favorite-photo"></div>
+              <div class="favorite-copy">
+                <h3>{{ candidate.name }}, {{ candidate.age }}</h3>
+                <p>{{ candidate.intro }}</p>
+              </div>
+              <div class="favorite-actions">
+                <a class="card-action secondary" [routerLink]="['/perfil', candidate.slug]" [state]="{ lookingFor: lookingFor(), selectedCandidateSlug: candidate.slug }">
+                  Ver perfil
+                </a>
+                <button type="button" class="card-action primary" (click)="selectCandidate(candidate.slug)">Abrir chat</button>
+              </div>
+            </article>
+          }
+        </div>
+      } @else {
+        <div class="favorites-empty">
+          <p>Aun no guardaste perfiles. Usa el corazon en {{ matchListLabel().toLowerCase() }} para tener un acceso rapido desde aqui.</p>
+        </div>
+      }
+    </section>
+  }
+
+  @if (showWelcomeModal()) {
+    <div class="welcome-overlay" role="dialog" aria-modal="true" aria-labelledby="welcome-title">
+      <div class="welcome-card">
+        <button type="button" class="modal-close" (click)="closeWelcomeModal()" aria-label="Cerrar mensaje">×</button>
+        <h2 id="welcome-title">Gracias. Una ultima cosa...</h2>
+        <p>
+          Hemos enviado un correo electronico a <strong>{{ confirmationEmail() }}</strong>. Verifica tu direccion siguiendo las instrucciones que hay en el.
+        </p>
+        <p class="confirmation-subtle">Si usaste una direccion incorrecta, puedes registrarte de nuevo.</p>
+        <p class="success-text">Confirmation Email Sent</p>
+        <button type="button" class="confirmation-button">Reenviar correo</button>
+      </div>
+    </div>
+  }
+</main>
