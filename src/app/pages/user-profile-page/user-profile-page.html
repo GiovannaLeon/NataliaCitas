@@ -1,7 +1,15 @@
 <main class="user-profile-page">
   <header class="profile-topbar">
-    <a routerLink="/candidatos" class="back-link">← Volver</a>
-    <a routerLink="/" class="brand-link">Natalia</a>
+    <div class="topbar-left">
+      <a routerLink="/" class="brand-link">Natalia</a>
+      <a routerLink="/candidatos" class="back-link">← Volver</a>
+    </div>
+
+    <div class="profile-topbar-user">
+      <span class="profile-topbar-label">Perfil visible</span>
+      <strong>{{ profilePreview().username }}</strong>
+    </div>
+
     <span class="status-pill">Editar perfil</span>
   </header>
 

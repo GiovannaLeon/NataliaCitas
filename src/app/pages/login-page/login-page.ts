@@ -13,22 +13,31 @@ import { UserProfileStore } from '../../data/user-profile.store';
 export class LoginPage {
   private readonly router = inject(Router);
   private readonly userProfileStore = inject(UserProfileStore);
+  private readonly plansDemoUsername = 'giovannaplanes';
 
   protected readonly loginError = signal('');
 
   protected signIn(username: string, password: string): void {
-    if (!username.trim() || !password.trim()) {
+    const cleanUsername = username.trim();
+    const cleanPassword = password.trim();
+
+    if (!cleanUsername || !cleanPassword) {
       this.loginError.set('Ingresa tu usuario y tu contrasena para continuar.');
       return;
     }
 
+    const hasExpiredTrial = cleanUsername.toLowerCase() === this.plansDemoUsername;
+
     this.loginError.set('');
     this.userProfileStore.seedFromRegistration({
-      username: username.trim(),
+      username: cleanUsername,
+      membershipStatus: hasExpiredTrial ? 'expired-trial' : 'active',
+      selectedPlan: '',
     });
-    void this.router.navigate(['/candidatos'], {
+
+    void this.router.navigate([hasExpiredTrial ? '/planes' : '/candidatos'], {
       state: {
-        currentUsername: username.trim(),
+        currentUsername: cleanUsername,
       },
     });
   }

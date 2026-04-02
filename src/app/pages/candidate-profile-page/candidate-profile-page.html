@@ -1,8 +1,16 @@
 <main class="profile-page">
   @if (candidate(); as person) {
     <header class="profile-topbar">
-      <a routerLink="/candidatos" [state]="backNavigationState()" class="back-link">← Volver a coincidencias</a>
-      <a routerLink="/" class="brand-link">Natalia</a>
+      <div class="topbar-left">
+        <a routerLink="/" class="brand-link">Natalia</a>
+        <a routerLink="/candidatos" [state]="backNavigationState()" class="back-link">← Volver a coincidencias</a>
+      </div>
+
+      <div class="profile-topbar-user">
+        <span class="profile-topbar-label">Perfil visible</span>
+        <strong>{{ person.name }}, {{ person.age }}</strong>
+      </div>
+
       <a routerLink="/candidatos" [state]="backNavigationState()" class="chat-link">Ir al chat</a>
     </header>
 

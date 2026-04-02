@@ -27,7 +27,25 @@ export type ChatMessage = {
   from: 'candidate' | 'me';
   text: string;
   time: string;
+  sentAt: string;
 };
+
+const chatTimeFormatter = new Intl.DateTimeFormat('es-PE', {
+  hour: '2-digit',
+  minute: '2-digit',
+  hour12: false,
+});
+
+function createRelativeChatMessage(from: 'candidate' | 'me', text: string, minutesAgo: number): ChatMessage {
+  const sentAtDate = new Date(Date.now() - minutesAgo * 60_000);
+
+  return {
+    from,
+    text,
+    time: chatTimeFormatter.format(sentAtDate),
+    sentAt: sentAtDate.toISOString(),
+  };
+}
 
 export const FEMALE_CANDIDATES: CandidateProfile[] = [
   {
@@ -263,28 +281,28 @@ export const ALL_CANDIDATES = [...FEMALE_CANDIDATES, ...MALE_CANDIDATES];
 
 export const CHAT_MESSAGES: Record<string, ChatMessage[]> = {
   valeria: [
-    { from: 'candidate', text: 'Hola, me gusto tu perfil. Prefieres conversar aqui o por privado mas tarde?', time: '19:08' },
-    { from: 'me', text: 'Podemos empezar aqui. Me interesa conocerte con calma.', time: '19:10' },
-    { from: 'candidate', text: 'Perfecto. Yo tambien busco una conexion discreta pero real.', time: '19:11' },
+    createRelativeChatMessage('candidate', 'Hola, me gusto tu perfil. Prefieres conversar aqui o por privado mas tarde?', 95),
+    createRelativeChatMessage('me', 'Podemos empezar aqui. Me interesa conocerte con calma.', 82),
+    createRelativeChatMessage('candidate', 'Perfecto. Yo tambien busco una conexion discreta pero real.', 76),
   ],
   camila: [
-    { from: 'candidate', text: 'Me gustan las conversaciones claras. Que tipo de plan te atrae mas?', time: '18:42' },
-    { from: 'me', text: 'Algo elegante, relajado y sin demasiado ruido.', time: '18:46' },
+    createRelativeChatMessage('candidate', 'Me gustan las conversaciones claras. Que tipo de plan te atrae mas?', 1_420),
+    createRelativeChatMessage('me', 'Algo elegante, relajado y sin demasiado ruido.', 1_405),
   ],
-  luciana: [{ from: 'candidate', text: 'Estoy libre esta noche para hablar un rato. Te animas?', time: '20:03' }],
+  luciana: [createRelativeChatMessage('candidate', 'Estoy libre esta noche para hablar un rato. Te animas?', 4_300)],
   renata: [
-    { from: 'candidate', text: 'Prefiero conocerte primero por aqui antes de pasar a otra cosa.', time: '17:55' },
-    { from: 'me', text: 'Me parece bien. Vamos con calma.', time: '17:57' },
+    createRelativeChatMessage('candidate', 'Prefiero conocerte primero por aqui antes de pasar a otra cosa.', 12_100),
+    createRelativeChatMessage('me', 'Me parece bien. Vamos con calma.', 12_020),
   ],
   sebastian: [
-    { from: 'candidate', text: 'Hola. Vi tu perfil y me dio curiosidad conocerte mejor. Como te gusta empezar una conversacion?', time: '19:06' },
-    { from: 'me', text: 'Con calma y con un poco de misterio. Me gusta cuando hay tension desde el inicio.', time: '19:09' },
+    createRelativeChatMessage('candidate', 'Hola. Vi tu perfil y me dio curiosidad conocerte mejor. Como te gusta empezar una conversacion?', 22_400),
+    createRelativeChatMessage('me', 'Con calma y con un poco de misterio. Me gusta cuando hay tension desde el inicio.', 22_320),
   ],
-  mateo: [{ from: 'candidate', text: 'Si te gustan los planes discretos, creo que podemos entendernos muy bien.', time: '18:44' }],
-  adrian: [{ from: 'candidate', text: 'Estoy libre esta noche. Si quieres, empezamos por aqui y vemos si fluye.', time: '20:02' }],
+  mateo: [createRelativeChatMessage('candidate', 'Si te gustan los planes discretos, creo que podemos entendernos muy bien.', 47_500)],
+  adrian: [createRelativeChatMessage('candidate', 'Estoy libre esta noche. Si quieres, empezamos por aqui y vemos si fluye.', 2_950)],
   thiago: [
-    { from: 'candidate', text: 'Me gusta ir despacio, pero cuando conecto de verdad, se nota.', time: '17:54' },
-    { from: 'me', text: 'Entonces vamos bien. Yo tambien prefiero sentir la conexion primero.', time: '17:58' },
+    createRelativeChatMessage('candidate', 'Me gusta ir despacio, pero cuando conecto de verdad, se nota.', 61_400),
+    createRelativeChatMessage('me', 'Entonces vamos bien. Yo tambien prefiero sentir la conexion primero.', 61_320),
   ],
 };
 

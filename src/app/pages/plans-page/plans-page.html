@@ -1,0 +1,61 @@
+<main class="plans-page">
+  <header class="plans-topbar">
+    <a routerLink="/" class="brand-link" aria-label="Natalia">
+      <span class="brand-stack">Natalia</span>
+    </a>
+
+    <a [routerLink]="hasRestrictedAccess() ? '/login' : '/candidatos'" class="topbar-link">
+      {{ hasRestrictedAccess() ? 'Cambiar usuario' : 'Volver a candidatos' }}
+    </a>
+  </header>
+
+  <section class="plans-hero">
+    <div class="plans-copy">
+      <p class="eyebrow">Frontend de planes</p>
+      <h1>{{ headline() }}</h1>
+      <p class="hero-copy">{{ intro() }}</p>
+
+      <div class="status-strip">
+        <span class="status-pill" [class.status-pill-alert]="hasRestrictedAccess()">
+          {{ hasRestrictedAccess() ? 'Prueba vencida' : 'Cuenta activa' }}
+        </span>
+        <span class="status-copy">Cuenta: {{ currentUsername() }}</span>
+        @if (selectedPlan()) {
+          <span class="status-copy">Plan actual: {{ selectedPlan() }}</span>
+        }
+      </div>
+    </div>
+
+    <aside class="plans-note">
+      <p class="note-kicker">Solo maqueta</p>
+      <p>Esta pagina no procesa pagos. Solo deja listo el flujo visual para que luego el backend conecte checkout, renovaciones y estados reales.</p>
+    </aside>
+  </section>
+
+  <section class="plans-grid" aria-label="Planes disponibles">
+    @for (plan of plans; track plan.name) {
+      <article class="plan-card" [class.plan-card-featured]="plan.featured">
+        <div class="plan-card-header">
+          <span class="plan-badge">{{ plan.badge }}</span>
+          <h2>{{ plan.name }}</h2>
+          <p>{{ plan.summary }}</p>
+        </div>
+
+        <div class="plan-price-block">
+          <strong>{{ plan.price }}</strong>
+          <span>{{ plan.cadence }}</span>
+        </div>
+
+        <div class="plan-features">
+          @for (feature of plan.features; track feature) {
+            <p>{{ feature }}</p>
+          }
+        </div>
+
+        <button type="button" class="plan-button" [class.plan-button-featured]="plan.featured" (click)="choosePlan(plan.name)">
+          {{ selectedPlan() === plan.name ? 'Seguir con este plan' : 'Simular activacion' }}
+        </button>
+      </article>
+    }
+  </section>
+</main>

@@ -8,13 +8,43 @@
       <button type="button" class="topbar-link" [class.active]="activeSection() === 'candidatos'" (click)="openSection('candidatos')">
         {{ matchListLabel() }}
       </button>
-      <button type="button" class="topbar-link" [class.active]="activeSection() === 'chat'" (click)="openSection('chat')">Chat</button>
-      <button type="button" class="topbar-link" [class.active]="activeSection() === 'favoritos'" (click)="openSection('favoritos')">Favoritos</button>
+      <button type="button" class="topbar-link" [class.active]="activeSection() === 'chat'" (click)="openSection('chat')">
+        <span class="nav-icon nav-icon-chat" aria-hidden="true">
+          <svg viewBox="0 0 24 24" focusable="false">
+            <path d="M5 6.5C5 5.12 6.12 4 7.5 4h9C17.88 4 19 5.12 19 6.5v6c0 1.38-1.12 2.5-2.5 2.5H10l-3.8 3.2c-.49.41-1.2.06-1.2-.58V15.3A2.5 2.5 0 0 1 3 12.5v-6A2.5 2.5 0 0 1 5.5 4" />
+          </svg>
+        </span>
+        Chat
+        @if (unreadMessagesCount()) {
+          <span class="nav-counter">{{ unreadMessagesCount() }}</span>
+        }
+      </button>
+      <button type="button" class="topbar-link" [class.active]="activeSection() === 'favoritos'" (click)="openSection('favoritos')">
+        <span class="nav-icon nav-icon-heart" aria-hidden="true">
+          <svg viewBox="0 0 24 24" focusable="false">
+            <path d="M12 20.2 4.75 13.4A4.7 4.7 0 0 1 11.4 6.8L12 7.4l.6-.6a4.7 4.7 0 0 1 6.65 6.6L12 20.2Z" />
+          </svg>
+        </span>
+        Favoritos
+      </button>
+      <button type="button" class="topbar-link" [class.active]="activeSection() === 'actividad'" (click)="openSection('actividad')">
+        Actividad
+      </button>
     </nav>
+  </header>
 
-    <div class="topbar-right">
-      <div class="user-summary-card">
-        <div class="user-avatar">
+  <section class="candidates-hero">
+    <div class="hero-copy-block">
+      <p class="eyebrow">Coincidencias privadas</p>
+      <h1>{{ matchesHeading() }}</h1>
+      <p class="hero-copy">Explora perfiles, guarda favoritos y abre el chat solo cuando quieras concentrarte en una conversacion.</p>
+    </div>
+
+    <aside class="hero-side">
+      <div class="hero-pill">{{ visibleCandidates().length }} perfiles disponibles</div>
+
+      <div class="user-summary-card hero-profile-card">
+        <div class="user-avatar hero-user-avatar">
           @if (currentUserPhotoUrl()) {
             <img [src]="currentUserPhotoUrl()" [alt]="'Foto de ' + currentUsername()" class="user-avatar-image" />
           } @else {
@@ -22,27 +52,18 @@
           }
         </div>
 
-        <div class="user-summary">
+        <div class="user-summary hero-user-summary">
           <span class="user-summary-label">Tu perfil</span>
           <strong>{{ currentUsername() }}</strong>
           <small>{{ profileCompleted() ? 'Perfil completo' : 'Falta completar tu perfil' }}</small>
         </div>
+
+        <div class="hero-profile-actions">
+          <a routerLink="/mi-perfil" class="edit-profile-button">Editar perfil</a>
+          <button type="button" class="topbar-action" [class.active]="activeSection() === 'explorar'" (click)="openSection('explorar')">Explorar</button>
+        </div>
       </div>
-
-      <a routerLink="/mi-perfil" class="edit-profile-button">Editar perfil</a>
-
-      <button type="button" class="topbar-action" [class.active]="activeSection() === 'explorar'" (click)="openSection('explorar')">Explorar</button>
-    </div>
-  </header>
-
-  <section class="candidates-hero">
-    <div>
-      <p class="eyebrow">Coincidencias privadas</p>
-      <h1>{{ matchesHeading() }}</h1>
-      <p class="hero-copy">Todavia no hay backend, asi que esta vista es de demostracion, pero ya funciona como pagina separada con mensajes y chat visible.</p>
-    </div>
-
-    <div class="hero-pill">{{ candidates().length }} perfiles conectados</div>
+    </aside>
   </section>
 
   @if (activeSection() === 'explorar') {
@@ -67,129 +88,292 @@
     </section>
   }
 
-  @if (activeSection() === 'candidatos' || activeSection() === 'explorar') {
-    <section class="candidates-layout" [class.blurred-underlay]="showWelcomeModal()">
-      <div class="cards-column">
-        @for (candidate of visibleCandidates(); track candidate.slug) {
-          <article
-            class="candidate-card"
-            [class]="'candidate-card accent-' + candidate.accent"
-            [class.active]="selectedCandidate().slug === candidate.slug"
-          >
-            <div class="candidate-photo">
-              <span class="candidate-badge">{{ candidate.status }}</span>
-            </div>
-
-            <div class="candidate-meta">
-              <div>
-                <h2>{{ candidate.name }}, {{ candidate.age }}</h2>
-                <p>{{ candidate.city }} · {{ candidate.district }}</p>
-              </div>
-              <button
-                type="button"
-                class="ghost-heart"
-                [class.active]="isFavorite(candidate.slug)"
-                [attr.aria-label]="(isFavorite(candidate.slug) ? 'Quitar de favoritos a ' : 'Guardar ') + candidate.name"
-                (click)="toggleFavorite(candidate.slug)"
-              >
-                ♡
-              </button>
-            </div>
-
-            <p class="candidate-intro">{{ candidate.intro }}</p>
-
-            <div class="candidate-actions">
-              <a
-                class="card-action secondary"
-                [routerLink]="['/perfil', candidate.slug]"
-                [state]="{ lookingFor: lookingFor(), selectedCandidateSlug: candidate.slug }"
-              >
-                Ver perfil
-              </a>
-              <button type="button" class="card-action primary" (click)="selectCandidate(candidate.slug)">Chatear</button>
-            </div>
-          </article>
-        }
+  @if (activeSection() === 'actividad') {
+    <section class="activity-section">
+      <div class="section-heading activity-heading">
+        <p class="strip-kicker">Actividad</p>
+        <h2>Busca bloqueados, favoritos y conversaciones</h2>
+        <p class="activity-copy">Usa este buscador para encontrar rapido personas guardadas, bloqueadas o chats dentro de un rango de fechas.</p>
       </div>
 
-      <aside class="chat-panel" id="chat-panel">
-        <div class="chat-header">
-          <div>
-            <p class="chat-kicker">Chat activo</p>
-            <h2>{{ selectedCandidate().name }}</h2>
-          </div>
-          <span class="chat-status">En linea</span>
-        </div>
+      <div class="activity-toolbar">
+        <label class="activity-search">
+          <span class="activity-search-icon" aria-hidden="true">⌕</span>
+          <input
+            #activitySearch
+            type="search"
+            [value]="activitySearchQuery()"
+            [placeholder]="activitySearchPlaceholder()"
+            (input)="updateActivitySearchQuery(activitySearch.value)"
+          />
+        </label>
 
-        <div class="chat-thread">
-          @for (message of chatMessages(); track message.time + message.text) {
-            <article class="chat-bubble" [class.mine]="message.from === 'me'">
-              <p>{{ message.text }}</p>
-              <span>{{ message.time }}</span>
+        <div class="activity-tabs" role="tablist" aria-label="Actividad">
+          @for (tab of activityTabs; track tab.value) {
+            <button type="button" class="activity-tab" [class.active]="activeActivityTab() === tab.value" (click)="setActivityTab(tab.value)">
+              {{ tab.label }}
+            </button>
+          }
+        </div>
+      </div>
+
+      @if (activeActivityTab() === 'conversaciones') {
+        <div class="activity-filters">
+          <div class="filter-chips" role="tablist" aria-label="Rango de conversaciones">
+            @for (preset of conversationRangePresets; track preset.value) {
+              <button
+                type="button"
+                class="filter-chip"
+                [class.active]="conversationRangePreset() === preset.value"
+                (click)="setConversationRangePreset(preset.value)"
+              >
+                {{ preset.label }}
+              </button>
+            }
+          </div>
+
+          @if (conversationRangePreset() === 'custom') {
+            <div class="date-range-fields">
+              <label class="date-range-field">
+                <span>Desde</span>
+                <input #startDateInput type="date" [value]="conversationStartDate()" (input)="updateConversationStartDate(startDateInput.value)" />
+              </label>
+              <label class="date-range-field">
+                <span>Hasta</span>
+                <input #endDateInput type="date" [value]="conversationEndDate()" (input)="updateConversationEndDate(endDateInput.value)" />
+              </label>
+            </div>
+          }
+        </div>
+      }
+
+      @if (activeActivityTab() === 'favoritos') {
+        @if (filteredActivityFavoriteCandidates().length) {
+          <div class="activity-grid">
+            @for (candidate of filteredActivityFavoriteCandidates(); track candidate.slug) {
+              <article class="activity-card">
+                <div class="activity-card-main">
+                  <div class="inbox-avatar" [class]="'inbox-avatar accent-' + candidate.accent">{{ candidate.name.charAt(0) }}</div>
+                  <div class="activity-card-copy">
+                    <h3>{{ candidate.name }}, {{ candidate.age }}</h3>
+                    <p>{{ candidate.city }} · {{ candidate.district }} · {{ candidate.occupation }}</p>
+                    <small>{{ candidate.headline }}</small>
+                  </div>
+                </div>
+
+                <div class="activity-card-actions">
+                  <a class="card-action secondary" [routerLink]="['/perfil', candidate.slug]" [state]="{ lookingFor: lookingFor(), selectedCandidateSlug: candidate.slug }">Ver perfil</a>
+                  <button type="button" class="card-action secondary danger-action" (click)="removeFavorite(candidate.slug)">Quitar favorito</button>
+                  <button type="button" class="card-action primary" (click)="selectCandidate(candidate.slug)">Abrir chat</button>
+                </div>
+              </article>
+            }
+          </div>
+        } @else {
+          <div class="favorites-empty activity-empty">
+            <p>No se encontraron favoritos con ese criterio.</p>
+          </div>
+        }
+      }
+
+      @if (activeActivityTab() === 'bloqueados') {
+        @if (filteredBlockedCandidates().length) {
+          <div class="activity-grid">
+            @for (candidate of filteredBlockedCandidates(); track candidate.slug) {
+              <article class="activity-card blocked-card">
+                <div class="activity-card-main">
+                  <div class="inbox-avatar" [class]="'inbox-avatar accent-' + candidate.accent">{{ candidate.name.charAt(0) }}</div>
+                  <div class="activity-card-copy">
+                    <h3>{{ candidate.name }}, {{ candidate.age }}</h3>
+                    <p>{{ candidate.city }} · {{ candidate.district }}</p>
+                    <small>Contacto bloqueado desde tu cuenta.</small>
+                  </div>
+                </div>
+
+                <div class="activity-card-actions">
+                  <button type="button" class="card-action secondary" (click)="unblockCandidate(candidate.slug)">Desbloquear</button>
+                  <a class="card-action secondary" [routerLink]="['/perfil', candidate.slug]" [state]="{ lookingFor: lookingFor(), selectedCandidateSlug: candidate.slug }">Ver perfil</a>
+                </div>
+              </article>
+            }
+          </div>
+        } @else {
+          <div class="favorites-empty activity-empty">
+            <p>No hay bloqueados que coincidan con la busqueda.</p>
+          </div>
+        }
+      }
+
+      @if (activeActivityTab() === 'conversaciones') {
+        @if (filteredConversationActivity().length) {
+          <div class="activity-grid">
+            @for (conversation of filteredConversationActivity(); track conversation.slug) {
+              <article class="activity-card">
+                <div class="activity-card-main">
+                  <div class="inbox-avatar" [class]="'inbox-avatar accent-' + conversation.accent">{{ conversation.name.charAt(0) }}</div>
+                  <div class="activity-card-copy">
+                    <h3>{{ conversation.name }}</h3>
+                    <p>{{ conversation.latestMessage }}</p>
+                    <small>{{ conversation.latestDateLabel }} · {{ conversation.latestTimeLabel }} · {{ conversation.messagesInRange }} mensaje{{ conversation.messagesInRange > 1 ? 's' : '' }} en rango</small>
+                  </div>
+                </div>
+
+                <div class="activity-tags">
+                  @if (conversation.isFavorite) {
+                    <span class="activity-tag favorite-tag">Favorito</span>
+                  }
+                  @if (conversation.isBlocked) {
+                    <span class="activity-tag blocked-tag">Bloqueado</span>
+                  }
+                </div>
+
+                <div class="activity-card-actions">
+                  @if (!conversation.isBlocked) {
+                    <button type="button" class="card-action primary" (click)="selectCandidate(conversation.slug)">Abrir chat</button>
+                  } @else {
+                    <button type="button" class="card-action secondary" (click)="unblockCandidate(conversation.slug)">Desbloquear</button>
+                  }
+                  <a class="card-action secondary" [routerLink]="['/perfil', conversation.slug]" [state]="{ lookingFor: lookingFor(), selectedCandidateSlug: conversation.slug }">Ver perfil</a>
+                </div>
+              </article>
+            }
+          </div>
+        } @else {
+          <div class="favorites-empty activity-empty">
+            <p>No hay conversaciones dentro de ese rango o con ese texto.</p>
+          </div>
+        }
+      }
+    </section>
+  }
+
+  @if (activeSection() === 'candidatos' || activeSection() === 'explorar') {
+    <section class="candidates-layout" [class.blurred-underlay]="showWelcomeModal()">
+      @if (visibleCandidates().length) {
+        <div class="cards-column">
+          @for (candidate of visibleCandidates(); track candidate.slug) {
+            <article
+              class="candidate-card candidate-card-compact"
+              [class]="'candidate-card candidate-card-compact accent-' + candidate.accent"
+              [class.active]="selectedCandidateSlug() === candidate.slug"
+            >
+              <div class="candidate-photo">
+                <span class="candidate-badge">{{ candidate.status }}</span>
+              </div>
+
+              <div class="candidate-meta">
+                <div>
+                  <h2>{{ candidate.name }}, {{ candidate.age }}</h2>
+                  <p>{{ candidate.city }} · {{ candidate.district }}</p>
+                </div>
+
+                <div class="candidate-meta-tools">
+                  <button
+                    type="button"
+                    class="ghost-heart"
+                    [class.active]="isFavorite(candidate.slug)"
+                    [attr.aria-label]="(isFavorite(candidate.slug) ? 'Quitar de favoritos a ' : 'Guardar ') + candidate.name"
+                    (click)="toggleFavorite(candidate.slug)"
+                  >
+                    ♡
+                  </button>
+
+                  <button
+                    type="button"
+                    class="ghost-block"
+                    [disabled]="isBlocked(candidate.slug)"
+                    [attr.aria-label]="'Bloquear a ' + candidate.name"
+                    (click)="blockCandidate(candidate.slug)"
+                  >
+                    Bloquear
+                  </button>
+                </div>
+              </div>
+
+              <p class="candidate-intro">{{ candidate.intro }}</p>
+
+              <div class="candidate-actions compact-actions">
+                <a
+                  class="card-action secondary"
+                  [routerLink]="['/perfil', candidate.slug]"
+                  [state]="{ lookingFor: lookingFor(), selectedCandidateSlug: candidate.slug }"
+                >
+                  Ver perfil
+                </a>
+                <button type="button" class="card-action primary" (click)="selectCandidate(candidate.slug)">Abrir chat</button>
+              </div>
             </article>
           }
         </div>
-
-        <form class="chat-compose" novalidate (submit)="sendMessage(chatInput); $event.preventDefault()">
-          <input #chatInput type="text" placeholder="Escribe un mensaje privado..." />
-          <button type="submit">Enviar</button>
-        </form>
-      </aside>
+      } @else {
+        <div class="favorites-empty contacts-empty">
+          <p>Ya no tienes contactos visibles en esta seccion. Si bloqueaste a todos, el siguiente paso seria conectar esta accion con backend para poder revisar o desbloquear despues.</p>
+        </div>
+      }
     </section>
   }
 
   @if (activeSection() === 'chat') {
-    <section class="chat-focus-layout" [class.blurred-underlay]="showWelcomeModal()">
-      <article class="candidate-card chat-focus-card" [class]="'candidate-card accent-' + selectedCandidate().accent">
+    @if (selectedCandidate(); as activeChatCandidate) {
+      <section class="chat-focus-layout" [class.blurred-underlay]="showWelcomeModal()">
+        <article class="candidate-card chat-focus-card" [class]="'candidate-card accent-' + activeChatCandidate.accent">
         <div class="candidate-photo">
-          <span class="candidate-badge">{{ selectedCandidate().status }}</span>
+            <span class="candidate-badge">{{ activeChatCandidate.status }}</span>
         </div>
 
         <div class="candidate-meta">
           <div>
-            <h2>{{ selectedCandidate().name }}, {{ selectedCandidate().age }}</h2>
-            <p>{{ selectedCandidate().city }} · {{ selectedCandidate().district }}</p>
+              <h2>{{ activeChatCandidate.name }}, {{ activeChatCandidate.age }}</h2>
+              <p>{{ activeChatCandidate.city }} · {{ activeChatCandidate.district }}</p>
           </div>
         </div>
 
-        <p class="candidate-intro">{{ selectedCandidate().intro }}</p>
+          <p class="candidate-intro">{{ activeChatCandidate.intro }}</p>
 
-        <div class="candidate-actions">
+          <div class="candidate-actions">
           <a
             class="card-action secondary"
-            [routerLink]="['/perfil', selectedCandidate().slug]"
-            [state]="{ lookingFor: lookingFor(), selectedCandidateSlug: selectedCandidate().slug }"
+            [routerLink]="['/perfil', activeChatCandidate.slug]"
+            [state]="{ lookingFor: lookingFor(), selectedCandidateSlug: activeChatCandidate.slug }"
           >
             Ver perfil
           </a>
-          <button type="button" class="card-action primary" (click)="openSection('candidatos')">Volver a la lista</button>
-        </div>
-      </article>
-
-      <aside class="chat-panel chat-panel-expanded" id="chat-panel">
-        <div class="chat-header">
-          <div>
-            <p class="chat-kicker">Chat activo</p>
-            <h2>{{ selectedCandidate().name }}</h2>
+            <button type="button" class="card-action secondary danger-action" (click)="blockCandidate(activeChatCandidate.slug)">Bloquear</button>
+            <button type="button" class="card-action primary" (click)="openSection('candidatos')">Volver a la lista</button>
           </div>
-          <span class="chat-status">En linea</span>
-        </div>
+        </article>
 
-        <div class="chat-thread chat-thread-expanded">
-          @for (message of chatMessages(); track message.time + message.text) {
-            <article class="chat-bubble" [class.mine]="message.from === 'me'">
-              <p>{{ message.text }}</p>
-              <span>{{ message.time }}</span>
-            </article>
-          }
-        </div>
+        <aside class="chat-panel chat-panel-expanded" id="chat-panel">
+          <div class="chat-header">
+            <div>
+              <p class="chat-kicker">Chat activo</p>
+              <h2>{{ activeChatCandidate.name }}</h2>
+            </div>
+            <span class="chat-status">En linea</span>
+          </div>
 
-        <form class="chat-compose" novalidate (submit)="sendMessage(chatInputFocus); $event.preventDefault()">
-          <input #chatInputFocus type="text" placeholder="Escribe un mensaje privado..." />
-          <button type="submit">Enviar</button>
-        </form>
-      </aside>
-    </section>
+          <div class="chat-thread chat-thread-expanded">
+            @for (message of chatMessages(); track message.time + message.text) {
+              <article class="chat-bubble" [class.mine]="message.from === 'me'">
+                <p>{{ message.text }}</p>
+                <span>{{ message.time }}</span>
+              </article>
+            }
+          </div>
+
+          <form class="chat-compose" novalidate (submit)="sendMessage(chatInputFocus); $event.preventDefault()">
+            <input #chatInputFocus type="text" placeholder="Escribe un mensaje privado..." />
+            <button type="submit">Enviar</button>
+          </form>
+        </aside>
+      </section>
+    } @else {
+      <section class="favorites-section">
+        <div class="favorites-empty contacts-empty">
+          <p>No tienes ningun chat activo porque bloqueaste o quitaste todos los contactos visibles.</p>
+        </div>
+      </section>
+    }
   }
 
   @if (activeSection() === 'favoritos') {
@@ -212,6 +396,7 @@
                 <a class="card-action secondary" [routerLink]="['/perfil', candidate.slug]" [state]="{ lookingFor: lookingFor(), selectedCandidateSlug: candidate.slug }">
                   Ver perfil
                 </a>
+                <button type="button" class="card-action secondary danger-action" (click)="blockCandidate(candidate.slug)">Bloquear</button>
                 <button type="button" class="card-action primary" (click)="selectCandidate(candidate.slug)">Abrir chat</button>
               </div>
             </article>

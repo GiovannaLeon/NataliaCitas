@@ -2,6 +2,8 @@ import { Injectable, computed, signal } from '@angular/core';
 
 import type { LookingForOption } from './candidates';
 
+export type MembershipStatus = 'active' | 'expired-trial';
+
 export type UserProfileDraft = {
   email: string;
   username: string;
@@ -23,6 +25,8 @@ export type UserProfileDraft = {
   interests: string[];
   idealPlan: string[];
   boundaries: string[];
+  membershipStatus: MembershipStatus;
+  selectedPlan: string;
 };
 
 const STORAGE_KEY = 'natalia-user-profile';
@@ -48,6 +52,8 @@ const DEFAULT_PROFILE: UserProfileDraft = {
   interests: [],
   idealPlan: [],
   boundaries: [],
+  membershipStatus: 'active',
+  selectedPlan: '',
 };
 
 @Injectable({ providedIn: 'root' })
@@ -70,6 +76,8 @@ export class UserProfileStore {
     );
   });
 
+  readonly hasRestrictedAccess = computed(() => this.profileState().membershipStatus === 'expired-trial');
+
   seedFromRegistration(payload: Partial<UserProfileDraft>): void {
     const merged = {
       ...this.profileState(),
@@ -80,9 +88,25 @@ export class UserProfileStore {
     this.persist(merged);
   }
 
-  updateProfile(payload: UserProfileDraft): void {
-    this.profileState.set(payload);
-    this.persist(payload);
+  updateProfile(payload: Partial<UserProfileDraft>): void {
+    const merged = {
+      ...this.profileState(),
+      ...payload,
+    } satisfies UserProfileDraft;
+
+    this.profileState.set(merged);
+    this.persist(merged);
+  }
+
+  activatePlan(planName: string): void {
+    const merged = {
+      ...this.profileState(),
+      membershipStatus: 'active',
+      selectedPlan: planName,
+    } satisfies UserProfileDraft;
+
+    this.profileState.set(merged);
+    this.persist(merged);
   }
 
   private load(): UserProfileDraft {

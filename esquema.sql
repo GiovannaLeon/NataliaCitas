@@ -1,8 +1,8 @@
 -- NataliaCitas - esquema base de base de datos
 -- Motor objetivo: PostgreSQL 15+
 -- Este archivo define la estructura principal del backend para la plataforma:
--- autenticacion, perfiles, fotos, matches, favoritos, conversaciones,
--- mensajes, suscripciones, auditoria basica y datos semilla.
+-- autenticacion, perfiles, fotos, favoritos, bloqueos, matches,
+-- conversaciones, mensajes, actividad, suscripciones, auditoria y datos semilla.
 
 BEGIN;
 
@@ -177,6 +177,19 @@ CREATE TABLE IF NOT EXISTS favorites (
   CONSTRAINT favorites_not_self CHECK (user_id <> favorite_user_id)
 );
 
+CREATE TABLE IF NOT EXISTS user_blocks (
+  blocker_user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  blocked_user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  reason VARCHAR(160),
+  notes TEXT,
+  is_active BOOLEAN NOT NULL DEFAULT TRUE,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  unblocked_at TIMESTAMPTZ,
+  PRIMARY KEY (blocker_user_id, blocked_user_id),
+  CONSTRAINT user_blocks_not_self CHECK (blocker_user_id <> blocked_user_id)
+);
+
 CREATE TABLE IF NOT EXISTS matches (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_a_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
@@ -198,6 +211,7 @@ CREATE TABLE IF NOT EXISTS conversations (
   match_id UUID UNIQUE REFERENCES matches(id) ON DELETE SET NULL,
   created_by_user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   status conversation_status_enum NOT NULL DEFAULT 'active',
+  last_message_at TIMESTAMPTZ,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );

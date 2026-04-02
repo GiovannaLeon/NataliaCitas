@@ -163,6 +163,34 @@ input:focus {
   color: #c03f62;
 }
 
+.plans-helper {
+  display: grid;
+  gap: 0.5rem;
+  padding: 0.95rem 1rem;
+  border: 1px solid #e5deef;
+  border-radius: 1rem;
+  background: #f2f4fb;
+}
+
+.helper-copy {
+  margin: 0;
+  color: #51607d;
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+.helper-link {
+  color: #2f45f5;
+  font-size: 0.92rem;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.helper-link:hover,
+.helper-link:focus-visible {
+  transform: translateY(-1px);
+}
+
 .centered-link {
   justify-self: center;
 }
