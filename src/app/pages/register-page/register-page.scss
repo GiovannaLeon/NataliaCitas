@@ -470,12 +470,6 @@ input:focus {
   cursor: pointer;
 }
 
-.skip-button-disabled,
-.skip-button:disabled {
-  opacity: 0.42;
-  cursor: not-allowed;
-}
-
 .onboarding-form {
   margin-top: 2rem;
   display: grid;

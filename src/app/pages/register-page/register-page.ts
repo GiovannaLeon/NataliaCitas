@@ -189,23 +189,12 @@ export class RegisterPage {
     this.currentStep.set(5);
   }
 
-  protected skipPhotoStep(): void {
-    this.selectedPhotoName.set('');
-    this.selectedPhotoPreviewUrl.set('');
-    this.photoAdded.set(false);
-    this.currentStep.set(5);
-  }
-
   protected canContinueSecondStep(): boolean {
     return this.stepTwoForm.valid && !this.usernameTaken() && this.passwordScore() === 5;
   }
 
   protected canContinueThirdStep(): boolean {
     return this.selectedDiscreetStyle().length > 0;
-  }
-
-  protected canContinuePhotoStep(): boolean {
-    return this.photoAdded();
   }
 
   protected continueToStepSix(): void {
