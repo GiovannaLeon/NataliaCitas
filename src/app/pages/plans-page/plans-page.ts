@@ -35,6 +35,9 @@ export class PlansPage {
       ? 'La prueba visual de esta cuenta ya vencio. Elige un plan para volver a entrar a chats, favoritos y actividad.'
       : 'Esta pantalla es solo frontend. Puedes simular activacion de planes sin backend ni cobros reales.',
   );
+  protected readonly planActionLabel = computed(() =>
+    this.hasRestrictedAccess() ? 'Simular pago y activar acceso' : 'Simular activacion',
+  );
   protected readonly plans: PlanCard[] = [
     {
       name: 'Escapada',

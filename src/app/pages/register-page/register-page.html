@@ -1,9 +1,13 @@
 <main class="register-screen" [class.photo-step]="isFourthStep() || isFifthStep() || isSixthStep() || isSeventhStep()">
   @if (!isFourthStep() && !isFifthStep() && !isSixthStep() && !isSeventhStep()) {
+    <a routerLink="/login" class="screen-login-link">Iniciar sesion</a>
+  }
+
+  @if (!isFourthStep() && !isFifthStep() && !isSixthStep() && !isSeventhStep()) {
     <section class="register-panel">
       <header class="register-topbar">
-        <a routerLink="/" class="brand-link" aria-label="Natalia">
-          <span class="brand-stack">Natalia</span>
+        <a routerLink="/" class="brand-link" aria-label="Natalia Luna">
+          <span class="brand-stack">NATALIA LUNA</span>
         </a>
       </header>
 
@@ -206,7 +210,7 @@
   } @else if (isFourthStep()) {
     <section class="photo-step-layout">
       <div class="photo-copy-panel">
-        <p class="photo-brand">Natalia</p>
+        <p class="photo-brand">NATALIA LUNA</p>
 
         <div class="photo-copy-inner">
           <h1 class="photo-title">Agrega tu foto</h1>
@@ -234,8 +238,6 @@
           <button
             type="button"
             class="continue-button upload-button next-button"
-            [class.disabled]="!canContinuePhotoStep()"
-            [disabled]="!canContinuePhotoStep()"
             (click)="continueFromPhotoStep()"
           >
             Siguiente
@@ -243,10 +245,12 @@
         </div>
       </div>
 
-      <div class="photo-visual-panel" aria-hidden="true">
-        <button type="button" class="skip-button" (click)="skipPhotoStep()">Luego</button>
+      <div class="photo-visual-panel">
+        <button type="button" class="skip-button" (click)="continueFromPhotoStep()">
+          Luego
+        </button>
 
-        <div class="phone-illustration">
+        <div class="phone-illustration" aria-hidden="true">
           <div class="phone-shell">
             <div class="phone-notch"></div>
             <div class="phone-screen">
@@ -262,7 +266,7 @@
   } @else if (isFifthStep()) {
     <section class="photo-step-layout onboarding-layout">
       <div class="photo-copy-panel onboarding-copy-panel">
-        <p class="photo-brand">Natalia</p>
+        <p class="photo-brand">NATALIA LUNA</p>
 
         <div class="photo-copy-inner onboarding-copy-inner">
           <h1 class="photo-title small-onboarding-title">Respuesta rapida</h1>
@@ -304,9 +308,9 @@
         </div>
       </div>
 
-      <div class="photo-visual-panel simple-illustration" aria-hidden="true">
-        <button type="button" class="skip-button" (click)="skipToStepSix()">Later</button>
-        <div class="walk-illustration">
+      <div class="photo-visual-panel simple-illustration">
+        <button type="button" class="skip-button" (click)="continueToStepSix()">Luego</button>
+        <div class="walk-illustration" aria-hidden="true">
           <div class="cloud cloud-one"></div>
           <div class="cloud cloud-two"></div>
           <div class="person-figure"></div>
@@ -317,7 +321,7 @@
   } @else if (isSixthStep()) {
     <section class="photo-step-layout onboarding-layout">
       <div class="photo-copy-panel onboarding-copy-panel">
-        <p class="photo-brand">Natalia</p>
+        <p class="photo-brand">NATALIA LUNA</p>
 
         <div class="photo-copy-inner onboarding-copy-inner">
           <h1 class="photo-title small-onboarding-title">Opciones extra</h1>
@@ -363,9 +367,9 @@
         </div>
       </div>
 
-      <div class="photo-visual-panel simple-illustration" aria-hidden="true">
-        <button type="button" class="skip-button" (click)="skipToStepSeven()">Later</button>
-        <div class="walk-illustration alt-scene">
+      <div class="photo-visual-panel simple-illustration">
+        <button type="button" class="skip-button" (click)="continueToStepSeven()">Luego</button>
+        <div class="walk-illustration alt-scene" aria-hidden="true">
           <div class="cloud cloud-one"></div>
           <div class="cloud cloud-two"></div>
           <div class="person-figure"></div>
@@ -376,7 +380,7 @@
   } @else {
     <section class="photo-step-layout onboarding-layout final-onboarding">
       <div class="photo-copy-panel onboarding-copy-panel">
-        <p class="photo-brand">Natalia</p>
+        <p class="photo-brand">NATALIA LUNA</p>
 
         <div class="photo-copy-inner onboarding-copy-inner more-about-inner">
           <h1 class="photo-title small-onboarding-title">Cuentanos mas sobre ti</h1>
@@ -442,9 +446,9 @@
         </div>
       </div>
 
-      <div class="photo-visual-panel simple-illustration" aria-hidden="true">
-        <button type="button" class="skip-button" (click)="skipFinalDetails()">Later</button>
-        <div class="walk-illustration final-scene">
+      <div class="photo-visual-panel simple-illustration">
+        <button type="button" class="skip-button" (click)="submitOnboarding()">Luego</button>
+        <div class="walk-illustration final-scene" aria-hidden="true">
           <div class="cloud cloud-one"></div>
           <div class="cloud cloud-two"></div>
           <div class="person-figure"></div>

@@ -81,9 +81,23 @@ export class CandidatesPage {
     return username || 'Mi perfil';
   });
 
+  protected readonly hasRestrictedAccess = computed(() => this.userProfileStore.hasRestrictedAccess());
+  protected readonly isBlockingOverlayVisible = computed(() => this.showWelcomeModal() || this.hasRestrictedAccess());
   protected readonly profileCompleted = computed(() => this.userProfileStore.isComplete());
   protected readonly currentUserPhotoUrl = computed(() => this.userProfileStore.profile().photoPreviewUrl.trim());
   protected readonly currentUserInitial = computed(() => this.currentUsername().charAt(0).toUpperCase());
+  protected readonly trialExpiredMessage = computed(() => {
+    const unreadMessages = this.unreadMessagesCount();
+    const interestingPeople = this.visibleCandidates().length;
+    const messageCopy = unreadMessages
+      ? `Tienes ${unreadMessages} mensaje${unreadMessages === 1 ? '' : 's'} de personas interesantes.`
+      : 'Tienes mensajes de personas interesantes esperandote.';
+    const peopleCopy = interestingPeople
+      ? `${interestingPeople} persona${interestingPeople === 1 ? '' : 's'} quiere${interestingPeople === 1 ? '' : 'n'} conocerte hoy.`
+      : 'Hay personas que quieren conocerte hoy.';
+
+    return `${messageCopy} ${peopleCopy}`;
+  });
 
   protected readonly matchListLabel = computed(() => {
     return getMatchListLabel(this.lookingFor());
@@ -266,6 +280,10 @@ export class CandidatesPage {
   ];
 
   protected openSection(section: CandidateSection): void {
+    if (this.hasRestrictedAccess()) {
+      return;
+    }
+
     this.activeSection.set(section);
 
     if (section === 'chat' && !this.selectedCandidate()) {
@@ -278,12 +296,20 @@ export class CandidatesPage {
   }
 
   protected selectCandidate(candidateSlug: string): void {
+    if (this.hasRestrictedAccess()) {
+      return;
+    }
+
     this.selectedCandidateSlug.set(candidateSlug);
     this.activeSection.set('chat');
     this.markConversationAsRead(candidateSlug);
   }
 
   protected setFilter(filter: CandidateFilter): void {
+    if (this.hasRestrictedAccess()) {
+      return;
+    }
+
     this.activeFilter.set(filter);
     this.activeSection.set('explorar');
 
@@ -299,12 +325,20 @@ export class CandidatesPage {
   }
 
   protected toggleFavorite(candidateSlug: string): void {
+    if (this.hasRestrictedAccess()) {
+      return;
+    }
+
     this.favoriteSlugs.update((favorites) =>
       favorites.includes(candidateSlug) ? favorites.filter((slug) => slug !== candidateSlug) : [...favorites, candidateSlug],
     );
   }
 
   protected removeFavorite(candidateSlug: string): void {
+    if (this.hasRestrictedAccess()) {
+      return;
+    }
+
     this.favoriteSlugs.update((favorites) => favorites.filter((slug) => slug !== candidateSlug));
   }
 
@@ -313,6 +347,10 @@ export class CandidatesPage {
   }
 
   protected blockCandidate(candidateSlug: string): void {
+    if (this.hasRestrictedAccess()) {
+      return;
+    }
+
     if (this.isBlocked(candidateSlug)) {
       return;
     }
@@ -332,18 +370,34 @@ export class CandidatesPage {
   }
 
   protected unblockCandidate(candidateSlug: string): void {
+    if (this.hasRestrictedAccess()) {
+      return;
+    }
+
     this.blockedSlugs.update((blocked) => blocked.filter((slug) => slug !== candidateSlug));
   }
 
   protected setActivityTab(tab: ActivityTab): void {
+    if (this.hasRestrictedAccess()) {
+      return;
+    }
+
     this.activeActivityTab.set(tab);
   }
 
   protected updateActivitySearchQuery(value: string): void {
+    if (this.hasRestrictedAccess()) {
+      return;
+    }
+
     this.activitySearchQuery.set(value);
   }
 
   protected setConversationRangePreset(preset: ConversationRangePreset): void {
+    if (this.hasRestrictedAccess()) {
+      return;
+    }
+
     this.conversationRangePreset.set(preset);
 
     if (preset === 'custom') {
@@ -364,16 +418,28 @@ export class CandidatesPage {
   }
 
   protected updateConversationStartDate(value: string): void {
+    if (this.hasRestrictedAccess()) {
+      return;
+    }
+
     this.conversationRangePreset.set('custom');
     this.conversationStartDate.set(value);
   }
 
   protected updateConversationEndDate(value: string): void {
+    if (this.hasRestrictedAccess()) {
+      return;
+    }
+
     this.conversationRangePreset.set('custom');
     this.conversationEndDate.set(value);
   }
 
   protected sendMessage(input: HTMLInputElement): void {
+    if (this.hasRestrictedAccess()) {
+      return;
+    }
+
     const text = input.value.trim();
     const candidate = this.selectedCandidate();
 

@@ -1041,6 +1041,75 @@
   border-radius: 1.5rem;
 }
 
+.trial-overlay {
+  background: rgba(29, 21, 28, 0.38);
+}
+
+.trial-card {
+  width: min(92vw, 48rem);
+  padding: 2.35rem;
+  background: linear-gradient(180deg, rgba(255, 251, 252, 0.98), rgba(246, 235, 240, 0.96));
+}
+
+.trial-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.2rem;
+  padding: 0 0.9rem;
+  border-radius: 999px;
+  background: rgba(211, 19, 103, 0.1);
+  color: #9d0a48;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.trial-stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.85rem;
+  margin-top: 1.35rem;
+}
+
+.trial-stat {
+  display: grid;
+  gap: 0.3rem;
+  padding: 1rem 1.1rem;
+  border: 1px solid rgba(157, 10, 72, 0.12);
+  border-radius: 1.2rem;
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.trial-stat strong,
+.trial-stat span {
+  margin: 0;
+}
+
+.trial-stat strong {
+  font-size: 1.8rem;
+  line-height: 1;
+  color: #232d44;
+}
+
+.trial-stat span {
+  color: rgba(38, 31, 36, 0.68);
+}
+
+.trial-actions {
+  display: grid;
+  gap: 0.8rem;
+  margin-top: 1.5rem;
+}
+
+.trial-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
 .welcome-card h2 {
   padding-right: 2.5rem;
   color: #232d44;
@@ -1123,6 +1192,10 @@
 
   .favorites-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .trial-stats {
+    grid-template-columns: 1fr;
   }
 
   .explore-strip {

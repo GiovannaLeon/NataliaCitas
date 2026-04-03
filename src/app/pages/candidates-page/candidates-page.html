@@ -248,7 +248,7 @@
   }
 
   @if (activeSection() === 'candidatos' || activeSection() === 'explorar') {
-    <section class="candidates-layout" [class.blurred-underlay]="showWelcomeModal()">
+    <section class="candidates-layout" [class.blurred-underlay]="isBlockingOverlayVisible()">
       @if (visibleCandidates().length) {
         <div class="cards-column">
           @for (candidate of visibleCandidates(); track candidate.slug) {
@@ -315,7 +315,7 @@
 
   @if (activeSection() === 'chat') {
     @if (selectedCandidate(); as activeChatCandidate) {
-      <section class="chat-focus-layout" [class.blurred-underlay]="showWelcomeModal()">
+      <section class="chat-focus-layout" [class.blurred-underlay]="isBlockingOverlayVisible()">
         <article class="candidate-card chat-focus-card" [class]="'candidate-card accent-' + activeChatCandidate.accent">
         <div class="candidate-photo">
             <span class="candidate-badge">{{ activeChatCandidate.status }}</span>
@@ -408,6 +408,33 @@
         </div>
       }
     </section>
+  }
+
+  @if (hasRestrictedAccess()) {
+    <div class="welcome-overlay trial-overlay" role="dialog" aria-modal="true" aria-labelledby="trial-title" aria-describedby="trial-description">
+      <div class="welcome-card trial-card">
+        <span class="trial-badge">Prueba vencida</span>
+        <h2 id="trial-title">Se te ha acabado el tiempo de prueba</h2>
+        <p id="trial-description">{{ trialExpiredMessage() }}</p>
+        <p>Personas que quieren conocerte ya estan activas en tu bandeja. Ingresa a nuestros planes, que estan hechos para ti.</p>
+
+        <div class="trial-stats" aria-label="Resumen de actividad bloqueada">
+          <article class="trial-stat">
+            <strong>{{ unreadMessagesCount() || 3 }}</strong>
+            <span>mensajes por revisar</span>
+          </article>
+          <article class="trial-stat">
+            <strong>{{ visibleCandidates().length || 12 }}</strong>
+            <span>perfiles disponibles</span>
+          </article>
+        </div>
+
+        <div class="trial-actions">
+          <a routerLink="/planes" class="confirmation-button trial-button">Ver planes y simular pago</a>
+          <p class="confirmation-subtle">Cuando actives cualquier plan, volveras a esta pagina con el acceso habilitado.</p>
+        </div>
+      </div>
+    </div>
   }
 
   @if (showWelcomeModal()) {

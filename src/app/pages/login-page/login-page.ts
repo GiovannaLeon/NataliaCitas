@@ -35,7 +35,7 @@ export class LoginPage {
       selectedPlan: '',
     });
 
-    void this.router.navigate([hasExpiredTrial ? '/planes' : '/candidatos'], {
+    void this.router.navigate(['/candidatos'], {
       state: {
         currentUsername: cleanUsername,
       },
