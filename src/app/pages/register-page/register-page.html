@@ -59,7 +59,7 @@
 
             <button type="button" class="continue-button" (click)="continueToStepTwo()">Continuar</button>
 
-            <p class="legal-copy">© 2026 Natalia. Las modelos se muestran con fines ilustrativos.</p>
+            <p class="legal-copy">© 2026 Natalia Luna. Las modelos se muestran con fines ilustrativos.</p>
           </form>
         } @else if (isSecondStep()) {
           <form class="register-form second-step" [formGroup]="stepTwoForm" (ngSubmit)="continueToStepThree()" novalidate>
@@ -106,7 +106,7 @@
                 Certifico que tengo mas de 18 anos y acepto la
                 <a routerLink="/legal/privacidad">politica de privacidad</a>
                 y los
-                <a routerLink="/legal/terminos">terminos de Natalia</a>.
+                <a routerLink="/legal/terminos">terminos de Natalia Luna</a>.
               </span>
             </label>
             @if (stepTwoForm.controls.acceptedTerms.invalid && stepTwoForm.controls.acceptedTerms.touched) {
@@ -120,7 +120,7 @@
 
             <button type="submit" class="continue-button">Continuar</button>
 
-            <p class="legal-copy">Natalia te notificara perfiles afines y coincidencias en un entorno moderado y discreto.</p>
+            <p class="legal-copy">Natalia Luna te notificara perfiles afines y coincidencias en un entorno moderado y discreto.</p>
           </form>
         } @else {
           <form class="register-form third-step" [formGroup]="stepThreeForm" novalidate>
