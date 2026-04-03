@@ -235,13 +235,15 @@
             <span class="dot"></span>
           </div>
 
-          <button
-            type="button"
-            class="continue-button upload-button next-button"
-            (click)="continueFromPhotoStep()"
-          >
-            Siguiente
-          </button>
+          @if (selectedPhotoName()) {
+            <button
+              type="button"
+              class="continue-button upload-button next-button"
+              (click)="continueFromPhotoStep()"
+            >
+              Siguiente
+            </button>
+          }
         </div>
       </div>
 
